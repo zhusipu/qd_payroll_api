@@ -19,7 +19,8 @@
         "php": ">=5.4.0",
         "topthink/framework": "~5.0.0",
         "zhusipu/uams-php" : "~1.0.0",
-        "gamegos/jwt": "~0.1"
+        "gamegos/jwt": "~0.1",
+        "phpoffice/phpexcel": "^1.8"
     },
     "autoload": {
         "psr-4": {

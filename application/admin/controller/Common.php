@@ -43,7 +43,8 @@ class Common extends Controller
                 $token = $validator->validate($jwt,Config::get('jwt.key'));
                 $this->empNo = $token->getClaim('sub');
             } catch (JWTException $e){
-                $this->error($e->getMessage());
+                //令牌过期
+                $this->result('',403,$e->getMessage(),'json');
             }
         }else{
             $this->error('登录过期，请重新登录。');
