@@ -1,7 +1,7 @@
 <?php
 namespace app\admin\controller;
 
-use app\admin\model\UserEmp;
+use app\common\model\UserEmp;
 use Bmzy\Uams\User;
 use think\Config;
 use think\Controller;

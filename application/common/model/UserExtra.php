@@ -1,5 +1,5 @@
 <?php
-namespace app\admin\model;
+namespace app\common\model;
 use think\Config;
 use think\Db;
 use think\Model;

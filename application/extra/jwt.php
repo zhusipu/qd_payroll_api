@@ -8,5 +8,5 @@
 return [
     'key'   =>  'JD9fddMkvexKMONspIDB3fud2f09iMgX',
     'alg'   =>  'HS256',
-    'cookieName' =>  'Token'
+    'cookieName' =>  'mobile-token'
 ];
