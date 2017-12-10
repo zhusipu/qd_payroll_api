@@ -12,4 +12,10 @@ class User extends Common
         $info = $userEmp->exists($this->empNo,'EMP_NO');
         $this->success($info);
     }
+
+    public function resetPassword($empNo,$password){
+        Model("UserExtra")->setPassword($empNo, $password);
+        $this->success([],'设置密码成功！');
+    }
+
 }

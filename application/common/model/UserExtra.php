@@ -71,4 +71,31 @@ class UserExtra extends Model
 
     }
 
+    public function setPassword($empNo,$password){
+
+        $hash_password = password_hash($password, PASSWORD_BCRYPT);
+        $data = [
+            'password'  =>  $hash_password,
+            'isSetPassword' =>  1
+        ];
+        return $this
+            ->where([
+                'EMP_NO'    =>  $empNo
+            ])
+            ->update($data);
+    }
+
+    public function checkPassword($empNo,$password) {
+        $hash_password = $this
+            ->where([
+                'EMP_NO'    =>  $empNo
+            ])
+            ->value('password');
+        if(password_verify($password,$hash_password)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 }
