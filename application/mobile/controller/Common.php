@@ -1,6 +1,7 @@
 <?php
 namespace app\mobile\controller;
 use app\index\model;
+use Gamegos\JWT\Exception\JWTExpiredException;
 use think\Config;
 use think\Controller;
 use think\Cookie;
@@ -11,7 +12,7 @@ use Gamegos\JWT\Exception\JWTException;
 use Gamegos\JWT\Validator;
 use think\Request;
 use think\Response;
-use TimeCheer\Weixin\OPEN\OAuth2;
+use TimeCheer\Weixin\Open\OAuth2;
 use TimeCheer\Weixin\QYAPI\AccessToken;
 
 class Common extends Controller
@@ -46,6 +47,9 @@ class Common extends Controller
                 $token = $validator->validate($jwt,Config::get('jwt.key'));
                 $this->empNo = $token->getClaim('sub');
             } catch (JWTException $e){
+                //令牌过期
+                $this->result('',403,$e->getMessage(),'json');
+            } catch (JWTExpiredException $e){
                 //令牌过期
                 $this->result('',403,$e->getMessage(),'json');
             }

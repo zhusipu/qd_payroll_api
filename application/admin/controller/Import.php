@@ -2,12 +2,15 @@
 namespace app\admin\controller;
 
 use app\common\model\UserEmp;
+use think\Config;
 use think\Controller;
 use think\File;
+use TimeCheer\Weixin\QYAPI\AccessToken;
+use TimeCheer\Weixin\QYAPI\Message;
 
 class Import extends Common
 {
-    public function upload($date){
+    public function upload($date,$isSendNotice){
         $file = request()->file('file');
         // 移动到框架应用根目录/public/uploads/ 目录下
         if($file){
@@ -35,6 +38,7 @@ class Import extends Common
                 $chineseNameMapping = [];
                 $commonData = [];
                 $fieldEncryptList = [];
+                $sendUsers = [];
 
                 foreach ($fields as $k=>$v){
                     if($v['isPk'] === 1){
@@ -132,9 +136,39 @@ class Import extends Common
                         }else{
                             model("Data")->insert($addData);
                         }
+                        $sendUsers[] = $pkVal;
                     }
                 }
+                // 检查是否发送通知
+                if($isSendNotice == 'true') {
+                    $users = Model("UamsPerson")
+                        ->where([
+                            'empNo' =>  ['in',$sendUsers]
+                        ])
+                        ->field([
+                            'id',
+                            'weixinId'
+                        ])
+                        ->select();
+                    if($users){
+                        $ids = [];
+                        foreach($users as $k=>$v){
+                            if($v['weixinId'] != '') {
+                                $ids[] = $v['weixinId'];
+                            }else{
+                                $ids[] = $v['id'];
+                            }
+                        }
 
+                        $corpId = Config::get('workwechat.CorpID');
+                        $appConfig = Config::get('workwechat.app');
+                        $accessToken = new AccessToken($corpId, $appConfig['Secret']);
+                        $message = new Message($accessToken->get());
+                        $message->setToUser($ids);
+                        $message->setText("您的工资单已经可以查看。");
+                        $message->send($appConfig['AgentId']);
+                    }
+                }
                 $this->success([],"上传成功");
             }else{
                 // 上传失败获取错误信息

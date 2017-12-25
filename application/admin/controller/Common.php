@@ -47,7 +47,7 @@ class Common extends Controller
                 $this->result('',403,$e->getMessage(),'json');
             }
         }else{
-            $this->error('登录过期，请重新登录。');
+            $this->result('',403,'','json');
         }
     }
 

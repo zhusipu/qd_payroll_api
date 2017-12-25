@@ -29,7 +29,7 @@ class JsapiTicket extends Base {
         $signature = sha1($str);
         return [
             'signature' =>  $signature,
-            'noncestr' =>  $noncestr,
+            'nonceStr' =>  $noncestr,
             'timestamp' =>  $timestamp
         ];
 

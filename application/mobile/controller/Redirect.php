@@ -26,14 +26,13 @@ class Redirect extends Controller
         if($userInfo == false) {
             $this->error($User->getErrorMsg());
         }
-        $empNo = Model('UamsPerson')->getEmpNoByWxId($userInfo['UserId']);
-        $info = model('UserEmp')->getUserInfo($empNo);
-        model('UserEmp')->login($info);
-        //if($state == ''){
+        if(!isset($userInfo['UserId'])){
+            echo '请使用企业微信打开此链接！';
+        }else{
+            $empNo = Model('UamsPerson')->getEmpNoByWxId($userInfo['UserId']);
+            model('UserEmp')->login($empNo);
             $this->redirect('http://'.$_SERVER['HTTP_HOST'].Config::get('mobile.url'));
-        //}else{
-        //    $this->redirect($state);
-        //}
+        }
 
     }
 

@@ -43,7 +43,7 @@ class UserEmp extends \app\common\model\User implements UserInterface
     }
     
     //登录
-    protected function doLogin($info,$remember=false){
+    protected function doLogin($empNo,$remember=false){
         if($remember){
             $remember = true;
             $cookieTime = $this->remember;
@@ -53,12 +53,12 @@ class UserEmp extends \app\common\model\User implements UserInterface
         }
         //用户的岗位放到session中
         $token = new Token();
-        $token->setClaim('sub',$info['EMP_NO']);
+        $token->setClaim('sub',$empNo);
         $token->setClaim('exp',time() + $cookieTime);
         $encoder = new Encoder();
         $encoder->encode($token,Config::get('jwt.key'),Config::get('jwt.alg'));
 
-        Model('UserExtra')->updateAvatar($info['EMP_NO'],session('personid'));
+        Model('UserExtra')->updateAvatar($empNo,session('personid'));
         Cookie::init(Config::get('cookie'));
         Cookie::set(Config::get('jwt.cookieName'),$token->getJWT());
         return $token->getJWT();
@@ -86,6 +86,7 @@ class UserEmp extends \app\common\model\User implements UserInterface
     public function logout(){
         cookie('member',null);
         session('member',null);
+        cookie(Config::get('jwt.cookieName'),null);
         return true;
     }
 

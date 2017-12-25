@@ -26,9 +26,13 @@ class Signin extends Common
             $UserEmp = new UserEmp();
             session('personid',$result['personid']);
             //查看人力资源库有没有该用户
-            $info = $UserEmp->exists($result['empNo']);
+            $info = $UserEmp->getUserInfo($result['empNo']);
             if($info){
-                $this->success($UserEmp->login($info),'登陆成功!');
+                $userExtra = model("UserExtra")->getInfo($info['EMP_NO']);
+                if($userExtra['isSuperAdmin'] != 1){
+                    $this->error('您无权登录此系统');
+                }
+                $this->success($UserEmp->login($info['EMP_NO']),'登陆成功!');
             }else{
                 $this->error('本地系统中不存在此用户');
             }

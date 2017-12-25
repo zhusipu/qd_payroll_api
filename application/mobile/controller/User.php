@@ -29,13 +29,17 @@ class User extends Common{
         echo file_get_contents('.'.DS.'static'.DS.'home'.DS.'images'.DS.'avatar.png');
     }
 
-    public function twoSignin($password) {
+    public function twoSignin($cardNo, $password) {
+        $userInfo = Model("UserEmp")->getUserInfo($this->empNo);
+        if($userInfo['ID_CODE'] != trim($cardNo)) {
+            $this->error('您输入的身份证和系统不符，请重新输入');
+        }
         $result = Model("UserExtra")
             ->checkPassword($this->empNo,$password);
         if($result){
             $token = new Token();
             $token->setClaim('sub','two');
-            $token->setClaim('exp',time() + 15 * 60);
+            $token->setClaim('exp',time() + 2 * 60);
             $encoder = new Encoder();
             $encoder->encode($token,Config::get('jwt.key'),Config::get('jwt.alg'));
 

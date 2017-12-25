@@ -1,11 +1,10 @@
 <?php
 namespace app\mobile\controller;
-use Elasticsearch\ClientBuilder;
+use Gamegos\JWT\Exception\JWTException;
+use Gamegos\JWT\Exception\JWTExpiredException;
 use Gamegos\JWT\Validator;
-use org\apache\hadoop\WebHDFS;
 use think\Config;
 use think\Cookie;
-use think\Url;
 
 /**
  * Created by PhpStorm.
@@ -23,6 +22,8 @@ class Payroll extends Common{
                 $validator->validate($twoToken,Config::get('jwt.key'));
             } catch (JWTException $e){
                 //令牌过期
+                $this->error(100);
+            } catch (JWTExpiredException $e){
                 $this->error(100);
             }
         }else{
@@ -67,7 +68,7 @@ class Payroll extends Common{
                         $val = $fun($val);
                     }
                     if($v['isNullHide'] === 1){
-                        if($val == '' || $val == null){
+                        if($val == '' || $val == null || $val == 0){
                             continue;
                         }
                     }
